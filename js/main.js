@@ -84,47 +84,41 @@ window.addEventListener('DOMContentLoaded', () => {
 	}
 
 	setClock('.timer', '2021-11-17');
-});
 
-async function fetchAsync(url) {
-	let response = await fetch(url);
-	let data = await response.json();
-	return data;
-}
+	// Work with modal
 
-// Work with modal
+	const modal = document.querySelector('.modal');
+	const buttonsUsingModal = document.querySelectorAll('[data_modal]');
+	const modalClose = document.querySelector('[data_modal_close]');
 
-const modal = document.querySelector('.modal');
-const buttonsUsingModal = document.querySelectorAll('[data_modal]');
-const modalClose = document.querySelector('[data_modal_close]');
+	function triggerModal(displayValue, overflowValue = '') {
+		modal.style.display = displayValue;
+		document.body.style.overflow = overflowValue;
+	}
 
-function triggerModal(displayValue, overflowValue = '') {
-	modal.style.display = displayValue;
-	document.body.style.overflow = overflowValue;
-}
-
-buttonsUsingModal.forEach(btn => {
-	btn.addEventListener('click', () => {
-		triggerModal('block', 'hidden');
+	buttonsUsingModal.forEach(btn => {
+		btn.addEventListener('click', () => {
+			triggerModal('block', 'hidden');
+		});
 	});
-});
 
-modalClose.addEventListener('click', () => {
-	triggerModal('none');
-});
-
-modal.addEventListener('click', e => {
-	const target = e.target;
-	if (
-		target.classList.contains('modal') ||
-		target.classList.contains('modal_close')
-	) {
+	modalClose.addEventListener('click', () => {
 		triggerModal('none');
-	}
-});
+	});
 
-window.addEventListener('keyup', e => {
-	if (e.key === 'Escape' && modal.style.display === 'block') {
-		triggerModal('none');
-	}
+	modal.addEventListener('click', e => {
+		const target = e.target;
+		if (
+			target.classList.contains('modal') ||
+			target.classList.contains('modal_close')
+		) {
+			triggerModal('none');
+		}
+	});
+
+	window.addEventListener('keyup', e => {
+		if (e.key === 'Escape' && modal.style.display === 'block') {
+			triggerModal('none');
+		}
+	});
 });
