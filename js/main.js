@@ -30,6 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		}
 	});
 
+	
 	/// Create timer
 
 	function getTimeRemaining(endTime) {
@@ -85,63 +86,137 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	setClock('.timer', '2021-11-17');
 
-	// Work with modal
 
-	const modal = document.querySelector('.modal');
-	const buttonsUsingModal = document.querySelectorAll('[data_modal]');
-	const modalClose = document.querySelector('[data_modal_close]');
+	//Work with modal
 
-	function triggerModal(displayValue, overflowValue = '') {
-		modal.style.display = displayValue;
-		document.body.style.overflow = overflowValue;
-		clearTimeout(modalTimer);
-	}
+		const modal = document.querySelector('.modal');
+		const buttonsUsingModal = document.querySelectorAll('[data_modal]');
+		const modalClose = document.querySelector('[data_modal_close]');
 
-	const modalTimer = setTimeout(() => {
-		triggerModal('block', 'hidden');
-	}, 6000);
+		function triggerModal(displayValue, overflowValue = '') {
+			modal.style.display = displayValue;
+			document.body.style.overflow = overflowValue;
+			clearTimeout(modalTimer);
+		}
 
-	buttonsUsingModal.forEach(btn => {
-		btn.addEventListener('click', () => {
+		const modalTimer = setTimeout(() => {
 			triggerModal('block', 'hidden');
+		}, 6000);
+
+		buttonsUsingModal.forEach(btn => {
+			btn.addEventListener('click', () => {
+				triggerModal('block', 'hidden');
+			});
 		});
-	});
 
-	modalClose.addEventListener('click', () => {
-		triggerModal('none');
-	});
-
-	modal.addEventListener('click', e => {
-		const target = e.target;
-		if (
-			target.classList.contains('modal') ||
-			target.classList.contains('modal_close')
-		) {
+		modalClose.addEventListener('click', () => {
 			triggerModal('none');
-		}
-	});
+		});
 
-	window.addEventListener('keyup', e => {
-		if (e.key === 'Escape' && modal.style.display === 'block') {
-			triggerModal('none');
-		}
-	});
+		modal.addEventListener('click', e => {
+			const target = e.target;
+			if (
+				target.classList.contains('modal') ||
+				target.classList.contains('modal_close')
+			) {
+				triggerModal('none');
+			}
+		});
 
-	function showModalByScroll() {
-		if (
-			window.pageYOffset + document.documentElement.clientHeight >=
-			document.documentElement.scrollHeight
-		) {
-			triggerModal('block', 'hidden');
-			window.removeEventListener('scroll', showModalByScroll);
+		window.addEventListener('keyup', e => {
+			if (e.key === 'Escape' && modal.style.display === 'block') {
+				triggerModal('none');
+			}
+		});
+
+		function showModalByScroll() {
+			if (
+				window.pageYOffset + document.documentElement.clientHeight >=
+				document.documentElement.scrollHeight
+			) {
+				triggerModal('block', 'hidden');
+				window.removeEventListener('scroll', showModalByScroll);
+			}
+		}
+
+		window.addEventListener('scroll', showModalByScroll);
+
+		// window.onscroll = function () {
+		// 	if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
+		// 		triggerModal('block', 'hidden');
+		// 	}
+		// };
+
+
+	// Work with class
+
+	const data = {
+		menuCard: [
+			{
+				title: "Меню 'Фитнес'",
+				price: 229,
+				desc: `	Меню "Фитнес" - это новый подход к приготовлению блюд: больше
+							свежих овощей и фруктов. Продукт активных и здоровых людей. Это
+							абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
+				urlImg: 'img/tabs/vegy.jpg',
+			},
+			{
+				title: 'Меню “Премиум”',
+				price: 550,
+				desc: `	В меню “Премиум” мы используем не только красивый дизайн упаковки,
+							но и качественное исполнение блюд. Красная рыба, морепродукты,
+							фрукты - ресторанное меню без похода в ресторан!`,
+				urlImg: 'img/tabs/elite.jpg',
+			},
+			{
+				title: 'Меню "Постное"',
+				price: 430,
+				desc: `	Меню “Постное” - это тщательный подбор ингредиентов: полное
+							отсутствие продуктов животного происхождения, молоко из миндаля,
+							овса, кокоса или гречки, правильное количество белков за счет тофу
+							и импортных вегетарианских стейков.`,
+				urlImg: 'img/tabs/post.jpg',
+			},
+		],
+	};
+
+	const { menuCard } = data;
+
+	const menuCardParent = document.querySelector('[data_menuCard]');
+
+	class MenuCard {
+		constructor(price, urlImg, title, desc, selectorParent) {
+			this.price = price;
+			this.urlImg = urlImg;
+			this.title = title;
+			this.desc = desc;
+			this.selectorParent = selectorParent;
+		}
+
+		render() {
+			const itemMenu = document.createElement('div');
+			itemMenu.innerHTML += `
+			<div class="menu__item">
+						<img src=${this.urlImg} alt="elite" />
+						<h3 class="menu__item-subtitle">${this.title}</h3>
+						<div class="menu__item-descr">${this.desc}</div>
+						<div class="menu__item-divider"></div>
+						<div class="menu__item-price">
+							<div class="menu__item-cost">Цена:</div>
+							<div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+						</div>
+		`;
+			this.selectorParent.appendChild(itemMenu);
 		}
 	}
 
-	window.addEventListener('scroll', showModalByScroll);
-
-	// window.onscroll = function () {
-	// 	if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
-	// 		triggerModal('block', 'hidden');
-	// 	}
-	// };
+	menuCard.forEach(item => {
+		new MenuCard(
+			item.price,
+			item.urlImg,
+			item.title,
+			item.desc,
+			menuCardParent
+		).render();
+	});
 });
